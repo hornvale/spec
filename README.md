@@ -61,7 +61,7 @@ We can describe _J<sub>current</sub>_, the total current juice of the region, as
 
 If _J<sub>current</sub>_ falls below some threshold value _J<sub>min</sub>_, the region is declared to be effectively devoid of interest and can be unloaded until such a time that its juice once again exceeds that threshold.
 
-The following visualization simulates these changes to _J<sub>current</sub>_:
+The following visualization simulates these changes to _J<sub>current</sub>_; the character moves between chunks, and chunks are loaded (invisible -> visible) and are unloaded (visible -> invisible).
 
 ![Jcurrent changes](./images/juice_simulator.svg)
 

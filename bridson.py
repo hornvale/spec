@@ -70,17 +70,3 @@ def poisson_disc_sampler(width, height, radius, k=30):
             queue.pop(i)
 
     return samples
-
-# Example usage
-width, height, radius = 1000, 1000, 20
-samples = poisson_disc_sampler(width, height, radius)
-
-print(samples)
-
-# You might want to plot the points to visualize them
-import matplotlib.pyplot as plt
-
-x_coords, y_coords = zip(*samples)
-plt.scatter(x_coords, y_coords, s=1)
-plt.gca().set_aspect('equal', adjustable='box')
-plt.show()

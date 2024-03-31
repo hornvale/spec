@@ -25,7 +25,7 @@ We expand outward, adding new vertices, using a discretized version of Bridson's
 
 ![Bridson's Algorithm](./images/bridson_example.png)
 
-Each vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or ( _W_ + _A_ ⋅ _x_<sup>2</sup> + _B_ ⋅ _y_<sup>3</sup>) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
+Each vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or ( _W_ + _A_ ⋅ _x_<sup>2</sup> + _B_ ⋅ _y_<sup>3</sup> ) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
 
 We connect the vertices using Prim's algorithm, which seems to be well-suited to incremental growth (see [reference implementation](./prim.py) and [example](./prim_example.py)).
 

@@ -23,13 +23,9 @@ The initial vertex is always generated at (0, 0). It is given a seed value, a **
 
 We expand outward, adding new vertices, using a discretized version of Bridson's algorithm.
 
+Each vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or (_W_+_A_⋅_x_<sup>2</sup> + _B_⋅_y_<sup>3</sup>) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
 
 
-Each first-degree vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or (_W_+_A_⋅_x_<sup>2</sup> + _B_⋅_y_<sup>3</sup>) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
-
-For each first-degree vertex, 1-3 edges are pseudorandomly generated to adjacent coordinate pairs. Where these coincide with existing vertices, they become new passages to that existing vertex.
-
-In the worst case, this leads to one initial vertex and two first-degree vertices that connect only to one another or to the initial vertex.
 
 ## Region
 

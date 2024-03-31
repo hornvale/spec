@@ -41,7 +41,7 @@ def poisson_disc_sampler(width, height, radius, k=30):
         return True
 
     # First sample
-    x, y = width / 2, height / 2
+    x, y = int(width / 2), int(height / 2)
     queue.append((x, y))
     samples.append((x, y))
     grid[get_grid_index(x, y)] = (x, y)
@@ -56,6 +56,9 @@ def poisson_disc_sampler(width, height, radius, k=30):
             r = random.uniform(radius, 2 * radius)
             x = parent_x + r * math.cos(angle)
             y = parent_y + r * math.sin(angle)
+
+            x = round(x)
+            y = round(y)
 
             if 0 <= x < width and 0 <= y < height and far(x, y):
                 queue.append((x, y))

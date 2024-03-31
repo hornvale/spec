@@ -46,9 +46,10 @@ def add_cycles_to_mst(points, mst_edges, num_cycles=10):
     updated_edges = list(mst_edges) + [(points[edge[1]], points[edge[2]]) for edge in cycles_to_add]
     return updated_edges
 
-points = poisson_disc_sampler(1000, 1000, 20)
+points = poisson_disc_sampler(100, 100, 20)
+print("Points:", points)
 mst_edges = prim_mst(points)
-updated_edges = add_cycles_to_mst(points, mst_edges, num_cycles=500)
+updated_edges = add_cycles_to_mst(points, mst_edges, num_cycles=5)
 
 # Plot points
 x_coords, y_coords = zip(*points)

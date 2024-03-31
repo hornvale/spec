@@ -25,7 +25,7 @@ We expand outward, adding new vertices, using a discretized version of Bridson's
 
 ![Bridson's Algorithm](./images/bridson_example.png)
 
-We connect the vertices using Prim's algorithm, which seems to be well-suited to incremental growth (see [reference implementation](./prim.py) and [example](./prim_example.py)).
+We connect the vertices into a minimum spanning tree using Prim's algorithm, which seems to be well-suited to incremental growth (see [reference implementation](./prim.py) and [example](./prim_example.py)).
 
 ![Prim's algorithm](./images/prim_example.png)
 
@@ -35,11 +35,46 @@ Then we can randomly add cycles (see [reference implementation](./add_cycles.py)
 
 This can easily generate more regions than anyone could explore, but we can modify these algorithms to expand incrementally in the direction of exploration.
 
-## Region
+## Vertex/Region
 
 Each vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or ( _W_ + _A_ ⋅ _x_<sup>2</sup> + _B_ ⋅ _y_<sup>3</sup> ) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
 
+### Juice and Chunk Loading and Unloading
 
+Each vertex corresponds to a region of the game world. The world is infinite but our hardware is not; consequently, we must use a chunk management system to determine how to direct computing resources to the world. This leads us to a concept of "juice," which is an attempt to model the engagement and interest of the player in a given region, and use that to determine how computing resources are allocated.
+
+We can describe _J<sub>current</sub>_, the total current juice of the region, as follows:
+
+- _J<sub>current</sub>_ = _w<sub>proximity</sub>_ ⋅ _J<sub>proximity</sub>_ + _w<sub>linger</sub>_ ⋅ _J<sub>linger</sub>_
+  - _w<sub>proximity</sub>_ is some fractional weight for the proximity factor
+  - _w<sub>linger</sub>_ is some fractional weight for the lingering factor
+  - _J<sub>proximity</sub>_ (_d_) = _J<sub>0</sub>_ ⋅ _e<sup>-λd</sup>_
+    - _J<sub>proximity</sub>_ (_d_) is the juice level at distance _d_
+    - _J<sub>0</sub>_ is the juice level at the player's location
+    - λ is the decay constant, determining how quickly the juice level decreases with distance
+    - _d_ is the distance from the player’s current position.
+  - _J<sub>linger</sub>_ (_t_) = _L_ ÷ ( 1 + _e<sup>-k(t - t<sub>0</sub>) </sup>_ )
+    - _J<sub>linger</sub>_ (_t_) is the juice level at time _t_
+    - _L_ is the maximum juice level
+    - _k_ is the steepness of the curve, determining how quickly the juice level falls off
+    - _t<sub>0</sub>_ is the time at which the player leaves the region, serving as the midpoint of the sigmoid curve
+
+If _J<sub>current</sub>_ falls below some threshold value _J<sub>min</sub>_, the region is declared to be effectively devoid of interest and can be unloaded until such a time that its juice once again exceeds that threshold.
+
+In addition, we can also monitor a longer-term cumulative trend:
+
+- _J<sub>engagement</sub>_ = _J<sub>engagement</sub>_ + Δ _J_ ⋅ _t_
+  - _J<sub>engagement</sub>_ is a cumulative measurement of how much a player has engaged with a region.
+  - Δ _J_ ⋅ _t_ is a measure of how much the juice has changed this turn. This will always be at least zero, though it may be rounded down to zero judiciously.
+
+And we can compare the current state to that historic trend:
+
+- _J<sub>decay</sub>_ = _J<sub>engagement</sub>_ ⋅ _e<sup>-λ(t - t<sub>0</sub>)</sup>_
+  - _J<sub>decay</sub>_ is an indicator of how much a player has engaged with a region _recently_
+  - λ is the decay constant, determining how quickly the juice level decreases with time since last engagement
+  - _t<sub>0</sub>_ is the time at which the player last interacted with the region
+
+This can be used as a trigger for "hey, remember me?" type events.
 
 
 

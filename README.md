@@ -65,6 +65,8 @@ The following visualization simulates these changes to _J<sub>current</sub>_; th
 
 ![Jcurrent changes](./images/juice_simulator.svg)
 
+### More Fun With Juice
+
 In addition, we can also monitor a longer-term cumulative trend:
 
 - _J<sub>engagement</sub>_ = _J<sub>engagement</sub>_ + Δ _J_ ⋅ _t_

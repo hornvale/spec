@@ -61,6 +61,10 @@ We can describe _J<sub>current</sub>_, the total current juice of the region, as
 
 If _J<sub>current</sub>_ falls below some threshold value _J<sub>min</sub>_, the region is declared to be effectively devoid of interest and can be unloaded until such a time that its juice once again exceeds that threshold.
 
+The following visualization simulates these changes to _J<sub>current</sub>_:
+
+![Jcurrent changes](./images/juice_simulator.svg)
+
 In addition, we can also monitor a longer-term cumulative trend:
 
 - _J<sub>engagement</sub>_ = _J<sub>engagement</sub>_ + Δ _J_ ⋅ _t_
@@ -75,8 +79,6 @@ And we can compare the current state to that historic trend:
   - _t<sub>0</sub>_ is the time at which the player last interacted with the region
 
 This can be used as a trigger for "hey, remember me?" type events.
-
-
 
 [^1]:  "You can't just say that your game exists."
   "I didn't say it. I _declared_ it."

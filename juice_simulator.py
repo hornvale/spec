@@ -163,6 +163,7 @@ def move_player(direction):
 # Main simulation loop
 print("Use 'w', 'a', 's', 'd' to move, '.' to wait, 'q' to quit")
 while True:
+    print("\033[H\033[J")
     update_juice(player_pos)
     print_grid()
     direction = input("Direction: ")

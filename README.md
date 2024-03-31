@@ -21,11 +21,19 @@ Vertices are generated on an infinite unit cartesian coordinate plane.
 
 The initial vertex is always generated at (0, 0). It is given a seed value, a **Region Seed**, equal to that of the World Seed.
 
-We expand outward, adding new vertices, using a discretized version of Bridson's algorithm.
+We expand outward, adding new vertices, using a discretized version of Bridson's algorithm (see [reference implementation](./bridson.py) and [example](./bridson_example.py)).
+
+![Bridson's Algorithm](./images/bridson_example.png)
 
 Each vertex is given a seed value equal to the World Seed modified by its own _x_ and _y_ coordinates (specifics are an implementation detail; this could be just concatenating the world seed and the _x_ and _y_ coordinates and hashed, or (_W_+_A_⋅_x_<sup>2</sup> + _B_⋅_y_<sup>3</sup>) mod _M_ where _A_ and _B_ are prime numbers and _M_ is a very large prime number close to `INT_MAX`, etc).
 
+We connect the vertices using Prim's algorithm, which seems to be well-suited to incremental growth (see [reference implementation](./prim.py) and [example](./prim_example.py)).
 
+![Prim's algorithm](./images/prim_example.png)
+
+Then we can randomly add cycles (see [reference implementation](./add_cycles.py)).
+
+![Cycles example](./images/cycles_example.png)
 
 ## Region
 

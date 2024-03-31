@@ -2,7 +2,7 @@ from bridson import poisson_disc_sampler
 from prim import prim_mst
 import matplotlib.pyplot as plt
 
-points = poisson_disc_sampler(1000, 1000, 20)
+points = poisson_disc_sampler(100, 100, 20)
 mst_edges = prim_mst(points)
 
 # Plot points

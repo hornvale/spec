@@ -2,7 +2,7 @@
 from bridson import poisson_disc_sampler
 import matplotlib.pyplot as plt
 
-width, height, radius = 1000, 1000, 20
+width, height, radius = 100, 100, 20
 samples = poisson_disc_sampler(width, height, radius)
 
 print(samples)

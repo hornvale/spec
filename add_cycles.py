@@ -57,7 +57,7 @@ plt.scatter(x_coords, y_coords, s=1)
 
 # Draw MST edges
 for p1, p2 in updated_edges:
-    plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='r')
+    plt.plot([p1[0], p2[0]], [p1[1], p2[1]], color='r', linewidth=2, markersize=12, marker='o')
 
 plt.gca().set_aspect('equal', adjustable='box')
 plt.show()

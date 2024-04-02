@@ -1,4 +1,4 @@
-from tgen3_seasonal_temperature_variation import TerrainGenerator
+from tgen5_moisture import TerrainGenerator
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
@@ -10,6 +10,12 @@ temperature_map = generator.generate_temperature(x_start=0, y_start=0, width=100
 temperature_summer_map = generator.apply_seasonal_variation(temperature_map, day_of_year=93, amplitude=20, days_in_year=365)
 temperature_autumn_map = generator.apply_seasonal_variation(temperature_map, day_of_year=187, amplitude=20, days_in_year=365)
 temperature_winter_map = generator.apply_seasonal_variation(temperature_map, day_of_year=280, amplitude=20, days_in_year=365)
+temperature_spring2_map = generator.apply_seasonal_and_latitude_variation(temperature_map, max_latitude=100, equator_position=100, day_of_year=0, amplitude=20, days_in_year=365, scaling_factor=0.1)
+temperature_summer2_map = generator.apply_seasonal_and_latitude_variation(temperature_map, max_latitude=100, equator_position=100, day_of_year=93, amplitude=20, days_in_year=365, scaling_factor=0.1)
+temperature_autumn2_map = generator.apply_seasonal_and_latitude_variation(temperature_map, max_latitude=100, equator_position=100, day_of_year=187, amplitude=20, days_in_year=365, scaling_factor=0.1)
+temperature_winter2_map = generator.apply_seasonal_and_latitude_variation(temperature_map, max_latitude=100, equator_position=100, day_of_year=280, amplitude=20, days_in_year=365, scaling_factor=0.1)
+generator = TerrainGenerator(seed=44)
+moisture = generator.generate_moisture(x_start=0, y_start=0, width=100, height=100, scale=50)
 
 # Create a figure with a specific gridspec for main plot and colorbar
 fig = plt.figure(figsize=(8, 6))
@@ -36,6 +42,16 @@ def on_key(event):
         plot_data(temperature_autumn_map, 'Autumn Temperature', cmap='coolwarm')
     elif event.key == '4':
         plot_data(temperature_winter_map, 'Winter Temperature', cmap='coolwarm')
+    elif event.key == '5':
+        plot_data(temperature_spring2_map, 'Spring Latitudinal Temperature', cmap='coolwarm')
+    elif event.key == '6':
+        plot_data(temperature_summer2_map, 'Summer Latitudinal Temperature', cmap='coolwarm')
+    elif event.key == '7':
+        plot_data(temperature_autumn2_map, 'Autumn Latitudinal Temperature', cmap='coolwarm')
+    elif event.key == '8':
+        plot_data(temperature_winter2_map, 'Winter Latitudinal Temperature', cmap='coolwarm')
+    elif event.key == 'm':
+        plot_data(moisture, 'Moisture', cmap='Blues')
     elif event.key == 'q':
         plt.close()
 

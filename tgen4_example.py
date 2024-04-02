@@ -5,6 +5,7 @@ import matplotlib.gridspec as gridspec
 # Initialize the terrain generator with a seed for reproducibility
 generator = TerrainGenerator(seed=42)
 elevation_map = generator.generate_elevation(x_start=0, y_start=0, width=100, height=100, scale=50, octaves=4, persistence=0.5)
+generator = TerrainGenerator(seed=43)
 temperature_map = generator.generate_temperature(x_start=0, y_start=0, width=100, height=100, scale=50, equator_position=100, max_latitude=100)
 temperature_summer_map = generator.apply_seasonal_variation(temperature_map, day_of_year=93, amplitude=20, days_in_year=365)
 temperature_autumn_map = generator.apply_seasonal_variation(temperature_map, day_of_year=187, amplitude=20, days_in_year=365)

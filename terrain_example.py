@@ -5,7 +5,7 @@ import matplotlib.gridspec as gridspec
 # Initialize the terrain generator with a seed for reproducibility
 generator = TerrainGenerator(seed=42)
 elevation = generator.generate_elevation(width=100, height=100, scale=50, octaves=4, persistence=0.5)
-temperature = generator.generate_temperature(width=100, height=100, scale=50, equator_position=50)
+temperature = generator.generate_temperature(width=100, height=100, scale=50, equator_position=80)
 wind_map = generator.generate_wind_map(width=100, height=100)
 adjusted_wind_map = generator.adjust_wind_map_for_elevation(wind_map, elevation)
 moisture = generator.generate_moisture(width=100, height=100, scale=50)

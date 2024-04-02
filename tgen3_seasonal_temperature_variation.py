@@ -44,7 +44,7 @@ class TerrainGenerator:
         elevation_map = min_elevation + (elevation_map + 0.5) * (max_elevation - min_elevation)
         return elevation_map
 
-    def generate_temperature(self, x_start, y_start, width, height, scale, equator_position, min_temperature=-20, max_temperature=120, temperature_noise_scale=0.5):
+    def generate_temperature(self, x_start, y_start, width, height, scale, equator_position, max_latitude=100, min_temperature=-20, max_temperature=120, temperature_noise_scale=0.5):
         """
         Generate a temperature map based on latitude and Perlin noise.
 
@@ -58,6 +58,7 @@ class TerrainGenerator:
             height (int): The height of the temperature map.
             scale (float): The scale of the Perlin noise.
             equator_position (int): The position of the equator (latitude).
+            max_latitude (int): The maximum latitude value.
             min_temperature (int): The minimum temperature value.
             max_temperature (int): The maximum temperature value.
             temperature_noise_scale (float): The scale of the temperature noise.
@@ -74,7 +75,7 @@ class TerrainGenerator:
 
                 # Compute distance from the equator and its influence on base temperature
                 distance_from_equator = abs((y_start + i) - equator_position)
-                latitudinal_factor = (1 - (distance_from_equator ** 2 / ((height / 2) ** 2)))
+                latitudinal_factor = (1 - (distance_from_equator ** 2 / (max_latitude ** 2)))
                 base_temp = min_temperature + (latitudinal_factor * (max_temperature - min_temperature))
 
                 # Adjust temperature based on Perlin noise
@@ -87,7 +88,6 @@ class TerrainGenerator:
                 temperature_map[i][j] = np.clip(temperature, min_temperature, max_temperature)
 
         return temperature_map
-
 
     def seasonal_temperature_modifier(self, day_of_year, amplitude=10, days_in_year=365):
         """

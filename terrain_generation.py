@@ -45,7 +45,7 @@ class TerrainGenerator:
         elevation_map = min_elevation + (elevation_map + 0.5) * (max_elevation - min_elevation)
         return elevation_map
 
-    def generate_temperature(self, width, height, scale, equator_position, min_temperature=-20, max_temperature=120):
+    def generate_temperature(self, width, height, scale, equator_position, max_latitude=100, min_temperature=-20, max_temperature=120):
         """
         Generate a temperature map based on latitude and Perlin noise.
 
@@ -57,6 +57,7 @@ class TerrainGenerator:
             height (int): The height of the temperature map.
             scale (float): The scale of the Perlin noise.
             equator_position (int): The position of the equator (latitude).
+            max_latitude (float): The maximum latitude value.
             min_temperature (int): The minimum temperature value.
             max_temperature (int): The maximum temperature value.
 
@@ -66,7 +67,7 @@ class TerrainGenerator:
         temperature_map = np.zeros((height, width))
         for i in range(height):
             distance_from_equator = abs(i - equator_position)
-            latitudinal_factor = (1 - (distance_from_equator ** 2 / height ** 2))
+            latitudinal_factor = (1 - (distance_from_equator ** 2 / max_latitude ** 2))
             base_temp = min_temperature + (latitudinal_factor * (max_temperature - min_temperature))
             for j in range(width):
                 noise = self.simplex.noise2(i / scale, j / scale) / 2.0
@@ -152,21 +153,24 @@ class TerrainGenerator:
         """
         return 1 - (abs(latitude) / max_latitude) ** scaling_factor
 
-    def apply_seasonal_and_latitude_variation(self, temperature_map, day_of_year, max_latitude, latitude_array):
+    def apply_seasonal_and_latitude_variation(self, temperature_map, day_of_year, max_latitude, equator_position):
         """
         Apply seasonal and latitude-based variation to the temperature map.
+
+        equator_position ends up being effectively the distance in pixels from
+        the top of the map to the equator.
 
         Args:
             temperature_map (np.ndarray): The original temperature map.
             day_of_year (int): The day of the year.
             max_latitude (float): The maximum latitude value.
-            latitude_array (np.ndarray): The array of latitude values.
+            equator_position (int): The position of the equator (latitude).
 
         Returns:
             np.ndarray: The temperature map with seasonal and latitude-based variation applied.
         """
         for i in range(temperature_map.shape[0]):
-            latitude = latitude_array[i]  # Assuming you have a corresponding latitude value for each row in your map
+            latitude = (i - equator_position) / max_latitude
             seasonal_shift = self.seasonal_temperature_modifier(day_of_year) * self.latitude_seasonal_scale(latitude, max_latitude)
             temperature_map[i, :] += seasonal_shift
         return temperature_map

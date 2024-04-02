@@ -5,7 +5,7 @@ import matplotlib.gridspec as gridspec
 # Initialize the terrain generator with a seed for reproducibility
 generator = TerrainGenerator(seed=42)
 elevation = generator.generate_elevation(x_start=0, y_start=0, width=100, height=100, scale=50, octaves=4, persistence=0.5)
-temperature = generator.generate_temperature(x_start=0, y_start=0, width=100, height=100, scale=50, equator_position=80)
+temperature = generator.generate_temperature(x_start=0, y_start=0, width=100, height=100, scale=50, equator_position=100, max_latitude=100)
 
 # Create a figure with a specific gridspec for main plot and colorbar
 fig = plt.figure(figsize=(8, 6))

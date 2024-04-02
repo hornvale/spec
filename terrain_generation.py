@@ -65,11 +65,11 @@ class TerrainGenerator:
         """
         temperature_map = np.zeros((height, width))
         for i in range(height):
+            distance_from_equator = abs(i - equator_position)
+            latitudinal_factor = (1 - (distance_from_equator ** 2 / height ** 2))
+            base_temp = min_temperature + (latitudinal_factor * (max_temperature - min_temperature))
             for j in range(width):
                 noise = self.simplex.noise2(i / scale, j / scale) / 2.0
-                distance_from_equator = abs(i - equator_position)
-                latitudinal_factor = (1 - (distance_from_equator ** 2 / height ** 2))
-                base_temp = min_temperature + (latitudinal_factor * (max_temperature - min_temperature))
                 temperature_map[i][j] = base_temp + noise * (max_temperature - min_temperature)
 
         # Rescale the temperature map to ensure it's within the min and max temperature range
@@ -78,6 +78,97 @@ class TerrainGenerator:
         temperature_map = (temperature_map - min_temp_map) / (max_temp_map - min_temp_map)
         temperature_map = min_temperature + (temperature_map * (max_temperature - min_temperature))
 
+        return temperature_map
+
+    def adjust_temperature_for_elevation(self, temperature_map, elevation_map, lapse_rate, min_temperature=-20, max_temperature=120):
+        """
+        Adjust the temperature based on elevation using a lapse rate.
+
+        Args:
+            temperature_map (np.ndarray): The original temperature map.
+            elevation_map (np.ndarray): The elevation map.
+            lapse_rate (float): The temperature lapse rate.
+            min_temperature (int): The minimum temperature value.
+            max_temperature (int): The maximum temperature value.
+
+        Returns:
+            np.ndarray: The adjusted temperature map based on elevation.
+        """
+        adjusted_temperature_map = np.copy(temperature_map)
+        for i in range(adjusted_temperature_map.shape[0]):
+            for j in range(adjusted_temperature_map.shape[1]):
+                adjusted_temperature_map[i][j] -= lapse_rate * elevation_map[i][j]
+
+        # Rescale the temperature map to ensure it's within the min and max temperature range
+        min_temp_map = np.min(adjusted_temperature_map)
+        max_temp_map = np.max(adjusted_temperature_map)
+        adjusted_temperature_map = (adjusted_temperature_map - min_temp_map) / (max_temp_map - min_temp_map)
+        adjusted_temperature_map = min_temperature + (adjusted_temperature_map * (max_temperature - min_temperature))
+        return adjusted_temperature_map
+
+    def seasonal_temperature_modifier(day_of_year, amplitude=10, days_in_year=365):
+        """
+        Calculate a seasonal temperature modifier based on the day of the year.
+
+        Args:
+            day_of_year (int): The day of the year.
+            amplitude (float): The amplitude of the temperature variation.
+            days_in_year (int): The total number of days in a year.
+
+        Returns:
+            float: The seasonal temperature modifier.
+        """
+        radians = (2 * math.pi / days_in_year) * day_of_year
+        return amplitude * math.sin(radians)
+
+    def apply_seasonal_variation(self, temperature_map, day_of_year, amplitude=10, days_in_year=365):
+        """
+        Apply seasonal variation to the temperature map.
+
+        Args:
+            temperature_map (np.ndarray): The original temperature map.
+            day_of_year (int): The day of the year.
+            amplitude (float): The amplitude of the temperature variation.
+            days_in_year (int): The total number of days in a year.
+
+        Returns:
+            np.ndarray: The temperature map with seasonal variation applied.
+        """
+        seasonal_shift = self.seasonal_temperature_modifier(day_of_year, amplitude, days_in_year)
+        temperature_map += seasonal_shift
+        return temperature_map
+
+    def latitude_seasonal_scale(self, latitude, max_latitude, scaling_factor=0.5):
+        """
+        Calculate a seasonal scaling factor based on latitude.
+
+        Args:
+            latitude (float): The latitude of the location.
+            max_latitude (float): The maximum latitude value.
+            scaling_factor (float): The scaling factor for the effect.
+
+        Returns:
+            float: The seasonal scaling factor based on latitude.
+        """
+        return 1 - (abs(latitude) / max_latitude) ** scaling_factor
+
+    def apply_seasonal_and_latitude_variation(self, temperature_map, day_of_year, max_latitude, latitude_array):
+        """
+        Apply seasonal and latitude-based variation to the temperature map.
+
+        Args:
+            temperature_map (np.ndarray): The original temperature map.
+            day_of_year (int): The day of the year.
+            max_latitude (float): The maximum latitude value.
+            latitude_array (np.ndarray): The array of latitude values.
+
+        Returns:
+            np.ndarray: The temperature map with seasonal and latitude-based variation applied.
+        """
+        for i in range(temperature_map.shape[0]):
+            latitude = latitude_array[i]  # Assuming you have a corresponding latitude value for each row in your map
+            seasonal_shift = self.seasonal_temperature_modifier(day_of_year) * self.latitude_seasonal_scale(latitude, max_latitude)
+            temperature_map[i, :] += seasonal_shift
         return temperature_map
 
     def generate_moisture(self, width, height, scale):
@@ -306,21 +397,3 @@ class TerrainGenerator:
                 if 0 <= neighbor_i < orographic_moisture.shape[0] and 0 <= neighbor_j < orographic_moisture.shape[1]:
                     orographic_moisture[i][j] = max(0, elevation_map[neighbor_i][neighbor_j] - elevation_map[i][j])
         return orographic_moisture
-
-    def adjust_temperature_for_elevation(self, temperature_map, elevation_map, lapse_rate):
-        """
-        Adjust the temperature based on elevation using a lapse rate.
-
-        Args:
-            temperature_map (np.ndarray): The original temperature map.
-            elevation_map (np.ndarray): The elevation map.
-            lapse_rate (float): The temperature lapse rate.
-
-        Returns:
-            np.ndarray: The adjusted temperature map based on elevation.
-        """
-        adjusted_temperature_map = np.copy(temperature_map)
-        for i in range(adjusted_temperature_map.shape[0]):
-            for j in range(adjusted_temperature_map.shape[1]):
-                adjusted_temperature_map[i][j] -= lapse_rate * elevation_map[i][j]
-        return adjusted_temperature_map

@@ -9,7 +9,7 @@ temperature = generator.generate_temperature(width=100, height=100, scale=50, eq
 wind_map = generator.generate_wind_map(width=100, height=100)
 adjusted_wind_map = generator.adjust_wind_map_for_elevation(wind_map, elevation)
 moisture = generator.generate_moisture(width=100, height=100, scale=50)
-adjusted_temperature = generator.adjust_temperature_for_elevation(temperature, elevation, lapse_rate=0.65)
+adjusted_temperature = generator.adjust_temperature_for_elevation(temperature, elevation, lapse_rate=0.0135)
 adjusted_moisture = generator.adjust_moisture_for_orographic_effect(moisture, elevation, wind_map=adjusted_wind_map)
 
 # Create a figure with a specific gridspec for main plot and colorbar

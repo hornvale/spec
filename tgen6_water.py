@@ -44,7 +44,7 @@ class TerrainGenerator:
         elevation_map = min_elevation + (elevation_map + 0.5) * (max_elevation - min_elevation)
         return elevation_map
 
-    def generate_temperature(self, x_start, y_start, width, height, scale, equator_position, max_latitude=100, min_temperature=-20, max_temperature=120, temperature_noise_scale=0.5):
+    def generate_temperature(self, x_start, y_start, width, height, scale, equator_position, max_latitude=100, min_temperature=0, max_temperature=80, temperature_noise_scale=0.5):
         """
         Generate a temperature map based on latitude and Perlin noise.
 
@@ -80,12 +80,12 @@ class TerrainGenerator:
 
                 # Adjust temperature based on Perlin noise
                 noise = self.simplex.noise2(x / scale, y / scale)
-                temperature_variation_range = (max_temperature - min_temperature) * temperature_noise_scale
+                temperature_variation_range = (max_temperature - min_temperature) * 0.5 * temperature_noise_scale
                 noise_contribution = noise * temperature_variation_range
 
                 # Set temperature, ensuring it stays within specified min and max bounds
                 temperature = base_temp + noise_contribution
-                temperature_map[i][j] = np.clip(temperature, min_temperature, max_temperature)
+                temperature_map[i][j] = temperature #np.clip(temperature, min_temperature, max_temperature)
 
         return temperature_map
 
